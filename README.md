@@ -10,41 +10,55 @@ To write a python program for creating Chat using TCP Sockets Links.
 ## PROGRAM:
 server:
 ```
-
 import socket
 s=socket.socket()
-s.bind(('localhost',8000))
-s.listen(5)
-c,addr=s.accept()
+s.bind(('localhost', 8000))
+s.listen(1)
+print("Waiting for connection...")
+c, addr=s.accept()
+print("Connected to", addr)
 while True:
-    ClientMessage=c.recv(1024).decode()
-    print("Client > ",ClientMessage)
-    msg=input("Server > ")
+    clientMessage = c.recv(1024).decode()  
+    if clientMessage.lower() == "exit":
+        print("Client disconnected")
+        break
+    print("Client >", clientMessage)
+    msg = input("Server > ")
     c.send(msg.encode())
+    if msg.lower() == "exit":
+        print("Server stopped")
+        break
+c.close()
+s.close()
 ```
 client:
 ```
 import socket
 s=socket.socket()
-s.connect(('localhost',8000))
+s.connect(('localhost', 8000))
+print("Connected to server")
 while True:
-    msg=input("Client > ")
+    msg = input("Client > ")
     s.send(msg.encode())
-    print("Server > ",s.recv(1024).decode())
+    if msg.lower() == "exit":
+        print("Disconnected from server")
+        break
+    serverReply = s.recv(1024).decode()    
+    if serverReply.lower() == "exit":
+        print("Server closed connection")
+        break 
+    print("Server >", serverReply)
+s.close()
 ```
 
 ## OUPUT:
 server:
-
-<img width="596" height="618" alt="image" src="https://github.com/user-attachments/assets/072a761c-c6a1-4328-a0e3-74d48fd41392" />
-
-
-
-
-
+![alt text](image.png)
 client:
+![alt text](image-1.png)
 
-<img width="578" height="592" alt="image" src="https://github.com/user-attachments/assets/ffc1d584-6076-4660-8f5f-4d96dff9649e" />
+
+
 
 
 
